@@ -1,7 +1,6 @@
 package softuni.blog.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by Admin on 22.11.2016 г..
@@ -37,14 +36,25 @@ public class User {
 
     private String password;
 
+    //Lets create some annotations. We want our id to be generated automatically
+
+
+    //The '@Id' annotations tells 'Hibernate' that this field will be the primary key to our database
+    @Id
+    //This annotation generates the field automatically
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer getId() {
         return id;
     }
+
+    //The annotations of 'get' below are very similar
 
     public void setId(Integer id) {
         this.id = id;
     }
 
+
+    @Column(name = "email", unique = true, nullable = false)
     public String getEmail() {
         return email;
     }
@@ -53,6 +63,7 @@ public class User {
         this.email = email;
     }
 
+    @Column(name = "fullName", nullable = false)
     public String getFullName() {
         return fullName;
     }
@@ -61,6 +72,7 @@ public class User {
         this.fullName = fullName;
     }
 
+    @Column(name = "password", length = 60, nullable = false)
     public String getPassword() {
         return password;
     }
@@ -68,4 +80,13 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    /*
+     * What we have done to the 'get' methods so far is:
+     * 1. Defining the column name.
+     * 2. Making them non-nullable(they can't take null values).
+     * 3. For the password field, we limited the password length to 60 symbols.
+     * 4. We told 'Hibernate' that the email is unique for every user.
+    */
+
 }
