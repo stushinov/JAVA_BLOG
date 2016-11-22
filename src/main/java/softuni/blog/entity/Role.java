@@ -1,6 +1,8 @@
 package softuni.blog.entity;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Admin on 22.11.2016 г..
@@ -15,6 +17,27 @@ public class Role {
 
     private Integer id;
     private String name;
+
+    //Let us create our relation between 'User' - 'Role'.
+    //Our relation will be of type 'Many-to-many' which means that many users can have many roles.
+    //In order to do that relation we need to create a collection of users
+    //This field will contain only unique users and it will tells us which user has what role
+
+    public Role(){
+        this.users = new HashSet<>();
+    }
+
+    //To use this set we must initialize it in our a constructor
+    private Set<User> users;
+
+    @ManyToMany(mappedBy = "roles")
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
 
     //We told it to auto generate an Identity
     @Id
