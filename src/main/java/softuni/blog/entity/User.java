@@ -1,6 +1,8 @@
 package softuni.blog.entity;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Admin on 22.11.2016 г..
@@ -21,6 +23,9 @@ public class User {
         this.email = email;
         this.fullName = fullName;
         this.password = password;
+
+        //Since we are not assigning a default role when a user is created we need to do this
+        this.roles = new HashSet<>();
     }
 
     //Since spring needs a second constructor(no idea why) we create a second empty constructor that will bring us some useful features(The logic)
@@ -36,8 +41,22 @@ public class User {
 
     private String password;
 
-    //Lets create some annotations. We want our id to be generated automatically
+    //Let us define the 'User' - 'Role relation'
 
+    private Set<Role> roles;
+
+    //The new thing we are using here is 'EAGER' which basically means that we want to load the roles together with the user
+    //The other annotation will create a joining table for our relation and name it users_roles
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "users_roles")
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+    //Lets create some annotations. We want our id to be generated automatically
 
     //The '@Id' annotations tells 'Hibernate' that this field will be the primary key to our database
     @Id
