@@ -61,6 +61,11 @@ public class BlogUserDetails extends User implements UserDetails {
         return AuthorityUtils.commaSeparatedStringToAuthorityList(userRoles);
     }
 
+    @Override
+    public String getUsername() {
+        return super.getEmail();
+    }
+
     public User getUser(){
         return this.user;
     }
