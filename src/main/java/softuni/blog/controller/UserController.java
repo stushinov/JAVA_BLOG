@@ -29,6 +29,15 @@ public class UserController {
     @Autowired
     UserRepository userRepository;
 
+    //To create a login, we need only 2 things. A method and a view. Spring Security will take care of the rest
+    @GetMapping("/login")
+    public String loginProcess(Model model){
+        model.addAttribute("view", "user/login");
+
+        return "base-layout";
+    }
+
+
     //This method will have the hard job to create a new user. Spring will automatically map the form data to our binding model.
     @PostMapping("/register")
     public String registerProcess(UserBindingModel userBindingModel){
