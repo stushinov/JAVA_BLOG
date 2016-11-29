@@ -26,6 +26,10 @@ public class User {
 
         //Since we are not assigning a default role when a user is created we need to do this
         this.roles = new HashSet<>();
+
+        //Initializing the articles set
+        this.articles = new HashSet<>();
+
     }
 
     //Since spring needs a second constructor(no idea why) we create a second empty constructor that will bring us some useful features(The logic)
@@ -41,8 +45,9 @@ public class User {
 
     private String password;
 
-    //Let us define the 'User' - 'Role relation'
+    private Set<Article> articles;
 
+    //Let us define the 'User' - 'Role relation'
     private Set<Role> roles;
 
     //The new thing we are using here is 'EAGER' which basically means that we want to load the roles together with the user
@@ -66,11 +71,12 @@ public class User {
         return id;
     }
 
-    //The annotations of 'get' below are very similar
-
     public void setId(Integer id) {
         this.id = id;
     }
+
+
+    //The annotations of 'get' below are very similar
 
 
     @Column(name = "email", unique = true, nullable = false)
@@ -82,6 +88,9 @@ public class User {
         this.email = email;
     }
 
+
+
+
     @Column(name = "fullName", nullable = false)
     public String getFullName() {
         return fullName;
@@ -91,6 +100,9 @@ public class User {
         this.fullName = fullName;
     }
 
+
+
+
     @Column(name = "password", length = 60, nullable = false)
     public String getPassword() {
         return password;
@@ -99,6 +111,25 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+
+
+
+    //It is pretty simple.
+    // It means that Hibernate should go to our Article entity and find the "author" field that we've created earlier.
+    // Then it will get the properties of the relation from there and use them as a base
+    // when creating the foreign key constraints in the database.
+    @OneToMany(mappedBy = "author")
+    public Set<Article> getArticles() {
+        return articles;
+    }
+
+    public void setArticles(Set<Article> articles) {
+        this.articles = articles;
+    }
+
+
+
 
     public void addRole(Role role){
         this.roles.add(role);
