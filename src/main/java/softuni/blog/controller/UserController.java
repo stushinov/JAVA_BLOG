@@ -1,9 +1,14 @@
 package softuni.blog.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import softuni.blog.bindingModel.UserBindingModel;
+import softuni.blog.entity.Role;
+import softuni.blog.entity.User;
 import softuni.blog.repository.RoleRepository;
 import softuni.blog.repository.UserRepository;
 
@@ -24,6 +29,32 @@ public class UserController {
     @Autowired
     UserRepository userRepository;
 
+    //This method will have the hard job to create a new user. Spring will automatically map the form data to our binding model.
+    @PostMapping("/register")
+    public String registerProcess(UserBindingModel userBindingModel){
+
+        if(!userBindingModel.getPassword().equals(userBindingModel.getConfirmPassword())){
+            //Put a pop up messgae here
+            return "redirect:/register";
+        }
+
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
+        User user = new User(
+                userBindingModel.getEmail(),
+                userBindingModel.getFullName(),
+
+                //Here we use the password encoder to encode our password, because we don't want to keep it like a plain text.
+                bCryptPasswordEncoder.encode(userBindingModel.getPassword())
+        );
+
+        Role userRole = this.roleRepository.findByName("ROLE_USER");
+
+        user.addRole(userRole);
+
+        this.userRepository.saveAndFlush(user);
+        return "redirect:/login";
+    }
 
     /*
     We are using the "@GetMapping" annotation. This annotation defines that the type of request we are going to process in our method is "GET".
