@@ -1,16 +1,24 @@
 package softuni.blog.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import softuni.blog.bindingModel.UserBindingModel;
 import softuni.blog.entity.Role;
 import softuni.blog.entity.User;
 import softuni.blog.repository.RoleRepository;
 import softuni.blog.repository.UserRepository;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Created by Admin on 24.11.2016 г..
@@ -23,11 +31,37 @@ import softuni.blog.repository.UserRepository;
 @Controller
 public class UserController {
 
+
+
+
     //We are using the "@Autowired" annotation again, to tell Spring to initialize those fields.
     @Autowired
     RoleRepository roleRepository;
     @Autowired
     UserRepository userRepository;
+
+
+
+
+    // First of all, we are using the "@RequestMapping" annotation. This annotation combines "GET" and "POST"
+    // requests (not only) and we need to specify that we are interested in the "GET" requests only.
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public String logoutPage(HttpServletRequest request, HttpServletResponse response){
+
+
+        //It checks if there is logged in user and if there is,
+        // it simply tells the authentication module to logout the user. Then it redirects to the login page again.
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if(auth != null){
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+
+        return "redirect:/login?logout";
+    }
+
+
+
 
     //To create a login, we need only 2 things. A method and a view. Spring Security will take care of the rest
     @GetMapping("/login")
@@ -36,6 +70,8 @@ public class UserController {
 
         return "base-layout";
     }
+
+
 
 
     //This method will have the hard job to create a new user. Spring will automatically map the form data to our binding model.
@@ -64,6 +100,9 @@ public class UserController {
         this.userRepository.saveAndFlush(user);
         return "redirect:/login";
     }
+
+
+
 
     /*
     We are using the "@GetMapping" annotation. This annotation defines that the type of request we are going to process in our method is "GET".
