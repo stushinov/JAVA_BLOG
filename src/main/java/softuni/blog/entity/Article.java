@@ -13,7 +13,7 @@ import javax.persistence.*;
 //Now that our class is an entity we need to give our database proper table name
 @Table(name = "articles")
 public class Article {
-    
+
          /*
         We will use this constructor to create articles easily.
         However, we need to create another empty constructor for Hibernate
@@ -81,6 +81,26 @@ public class Article {
         this.content = content;
     }
 
+
+
+
+    /*
+    Remember that we've left the author field in the Article entity for later?
+    Find the getter. Before we create the annotation, let's talk about the relation between our Article and the User entity.
+    Our relation will be of type OneToMany.
+    In our case, we will use “one to many relationship” to tell the program that one user will have many posts
+    */
+
+
+
+
+    //The first one is the “ManyToOne” annotation.
+    // Many to one relationship represents OneToMany relationship from the side of the “many”.
+    // Because we are working with the Article entity, we are telling Hibernate that many of our articles will
+    // correspond to one user. The other annotation is “JoinColumn”, which tells Hibernate that it should create a column called
+    // "authorId" that will keep our relation and can't be null.
+    @ManyToOne()
+    @JoinColumn(nullable = false, name = "authorId")
     public User getAuthor() {
         return author;
     }
