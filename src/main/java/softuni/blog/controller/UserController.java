@@ -1,8 +1,10 @@
 package softuni.blog.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
@@ -39,6 +41,33 @@ public class UserController {
     RoleRepository roleRepository;
     @Autowired
     UserRepository userRepository;
+
+
+
+
+
+    //First of all, we need to check if there is a logged in user. We don't want guests to our blog to access the user's page.
+    //Everyone else will be redirected to the login page.
+    @GetMapping("/profile")
+    @PreAuthorize("isAuthenticated()")
+    public String profilePage(Model model){
+
+        //This will give us only the basic properties of our user.
+        // That means only username (email in our case), roles and password.
+        // We can use it to extract the current user from the database:
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext()
+                                                                    .getAuthentication()
+                                                                    .getPrincipal();
+
+        User user = this.userRepository.findByEmail(principal.getUsername());
+
+        model.addAttribute("user", user);
+        model.addAttribute("view", "user/profile");
+
+        return "base-layout";
+    }
+
+
 
 
 
