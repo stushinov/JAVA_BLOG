@@ -2,9 +2,15 @@ package softuni.blog.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import softuni.blog.bindingModel.ArticleBindingModel;
+import softuni.blog.entity.Article;
+import softuni.blog.entity.User;
 import softuni.blog.repository.ArticleRepository;
 import softuni.blog.repository.UserRepository;
 
@@ -29,11 +35,13 @@ public class ArticleController {
 
 
 
-    //The "@GetMapping" annotation tells Spring that this method cannot be called if the user wants to submit data.
-    // It should be only used for viewing data, in our case showing the form.
-    // The "@PreAuthorize" annotation uses Spring Security. That annotation receives a parameter,
-    // which tell the authentication module who can access our method.
-    // We want to limit the article creation to logged in users only and that’s why we are using the "isAuthenticated()" parameter.
+    /*
+        The "@GetMapping" annotation tells Spring that this method cannot be called if the user wants to submit data.
+       It should be only used for viewing data, in our case showing the form.
+       The "@PreAuthorize" annotation uses Spring Security. That annotation receives a parameter,
+       which tell the authentication module who can access our method.
+       We want to limit the article creation to logged in users only and that’s why we are using the "isAuthenticated()" parameter.
+    */
     @GetMapping("/article/create")
     @PreAuthorize("isAuthenticated()")
     public String create(Model model){
@@ -43,6 +51,46 @@ public class ArticleController {
         // We want to load the "create" file from the "article" folder. Then we simply tell Spring to use our base layout.
         model.addAttribute("view", "article/create");
         return "base-layout";
+    }
+
+
+
+
+    /*
+    * Before we talk about the "@PostMapping" annotation, take a look at the route.
+    * It’s the exactly same route as the one we've used in our other method.
+    * So, what have we done? With this annotation,
+    * we told Spring that this method expects data that it needs to autofill in our binding model.
+    * The annotation handles "POST" request that are usually what the HTML forms are using as a "method" of the request.
+    * In summary, the other method will be called when the user wants to create new article (render the form)
+     * and this method will be called when he submits the data.
+    * */
+    @PostMapping("/article/create")
+    @PreAuthorize("isAuthenticated()")
+    public String createProcess(ArticleBindingModel articleBindingModel){
+
+        //get the currently logged in user:
+        UserDetails user = (UserDetails) SecurityContextHolder.getContext()
+                                                              .getAuthentication()
+                                                              .getPrincipal();
+        //We are using the user repository to find a user by his email. Spring Security saves username, but in our case this is our email.
+        User userEntity = this.userRepository.findByEmail(user.getUsername());
+
+        //We upload it to our database, using our article repository
+        Article articleEntity = new Article(
+                articleBindingModel.getTitle(),
+                articleBindingModel.getContent(),
+                userEntity
+        );
+
+        this.articleRepository.saveAndFlush(articleEntity);
+
+        return "redirect:/";
+
+        /*
+            Summary, we've got the user that Spring Security is using, then got the real entity user using his email.
+        Then we've created a new article and saved it to the database. Finally, we've redirected the user to the home page.
+        */
     }
 
 }

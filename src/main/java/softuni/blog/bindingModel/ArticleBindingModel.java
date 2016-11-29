@@ -19,7 +19,7 @@ public class ArticleBindingModel {
     private String content;
 
 
-    
+
     public String getTitle() {
         return title;
     }
