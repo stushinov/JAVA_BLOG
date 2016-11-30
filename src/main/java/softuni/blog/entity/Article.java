@@ -1,7 +1,5 @@
 package softuni.blog.entity;
-
-import com.sun.istack.internal.Nullable;
-
+// import com.sun.istack.internal.Nullable;
 import javax.persistence.*;
 
 /**
@@ -97,7 +95,6 @@ public class Article {
     Our relation will be of type OneToMany.
     In our case, we will use “one to many relationship” to tell the program that one user will have many posts
     */
-
      //The first one is the “ManyToOne” annotation.
     // Many to one relationship represents OneToMany relationship from the side of the “many”.
     // Because we are working with the Article entity, we are telling Hibernate that many of our articles will

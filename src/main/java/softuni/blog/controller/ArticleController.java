@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import softuni.blog.bindingModel.ArticleBindingModel;
 import softuni.blog.entity.Article;
@@ -30,7 +31,6 @@ public class ArticleController {
     private ArticleRepository articleRepository;
     @Autowired
     private UserRepository userRepository;
-
 
 
 
@@ -84,13 +84,39 @@ public class ArticleController {
         );
 
         this.articleRepository.saveAndFlush(articleEntity);
-
         return "redirect:/";
 
         /*
             Summary, we've got the user that Spring Security is using, then got the real entity user using his email.
         Then we've created a new article and saved it to the database. Finally, we've redirected the user to the home page.
         */
+    }
+
+
+
+
+
+
+    /*
+    * Something new! In our route, we declare parameter using curly brackets.
+    * Then in our method we use the "@PathVariable" annotation to tell Spring that this parameter should be taken from the URL.
+    * We are now free to use it in our method.
+    * The first thing we want to do is check if there is article with the given id in our database.
+    * If such article doesn't exist, we will redirect the user to the home page:
+    * */
+    @GetMapping("/article/{id}")
+    public String details(Model model, @PathVariable Integer id){
+        if(!this.articleRepository.exists(id)){
+            return "redirect:/";
+        }
+
+        //Get article from database using our repository
+        Article article = this.articleRepository.findOne(id);
+
+        model.addAttribute("article", article);
+        model.addAttribute("view", "article/details");
+
+        return "base-layout";
     }
 
 }
