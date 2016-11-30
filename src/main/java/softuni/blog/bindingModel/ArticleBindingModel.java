@@ -15,6 +15,7 @@ public class ArticleBindingModel {
     // This is really important. If they have different names Spring won't be able to autofill the binding model.
     @NotNull
     private String title;
+
     @NotNull
     private String content;
 

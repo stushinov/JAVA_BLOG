@@ -27,6 +27,13 @@ public class Article {
     public Article() {}
 
 
+    //Returns Articles to the main page
+    @Transient
+    public String getSummary(){
+        return  this.getContent().substring(0, this.getContent().length()/2) + ". . .";
+    }
+
+
     //The next important thing is the table columns. We need columns for id, title, content and author
     private Integer id;
 
@@ -72,7 +79,7 @@ public class Article {
         We can change the limit, but we can't be sure how long the content of an article will be.
         That's why we will change the database type to "text". The "text" type doesn’t have limit on its length.
     */
-    @Column(columnDefinition = "text", nullable = false)
+    @Column(nullable = false, columnDefinition = "text")
     public String getContent() {
         return content;
     }
@@ -91,10 +98,7 @@ public class Article {
     In our case, we will use “one to many relationship” to tell the program that one user will have many posts
     */
 
-
-
-
-    //The first one is the “ManyToOne” annotation.
+     //The first one is the “ManyToOne” annotation.
     // Many to one relationship represents OneToMany relationship from the side of the “many”.
     // Because we are working with the Article entity, we are telling Hibernate that many of our articles will
     // correspond to one user. The other annotation is “JoinColumn”, which tells Hibernate that it should create a column called
