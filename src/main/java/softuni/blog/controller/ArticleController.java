@@ -1,5 +1,6 @@
 package softuni.blog.controller;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -99,9 +100,6 @@ public class ArticleController {
 
 
 
-
-
-
     /*
     * Something new! In our route, we declare parameter using curly brackets.
     * Then in our method we use the "@PathVariable" annotation to tell Spring that this parameter should be taken from the URL.
@@ -124,4 +122,21 @@ public class ArticleController {
         return "base-layout";
     }
 
+
+    //Article edit-GET method
+    public String edit(@PathVariable Integer id, Model model){
+
+        if(!this.articleRepository.exists(id)){
+            return "redirect:/";
+        }
+
+        Article article = this.articleRepository.findOne(id);
+
+        model.addAttribute("view", "article/edit");
+        model.addAttribute("article", article);
+
+        return "base-layout";
+    }
+
+    
 }
