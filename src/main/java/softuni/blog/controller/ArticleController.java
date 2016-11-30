@@ -69,6 +69,11 @@ public class ArticleController {
     @PreAuthorize("isAuthenticated()")
     public String createProcess(ArticleBindingModel articleBindingModel){
 
+        //After all the problems with the @Column annotation and it's "nullable = false" i decided to this and it works
+        if(articleBindingModel.getContent().equals("") || articleBindingModel.getTitle().equals("")){
+            return "redirect:/article/create";
+        }
+
         //get the currently logged in user:
         UserDetails user = (UserDetails) SecurityContextHolder.getContext()
                                                               .getAuthentication()

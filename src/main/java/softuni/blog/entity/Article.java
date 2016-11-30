@@ -1,6 +1,7 @@
 package softuni.blog.entity;
 // import com.sun.istack.internal.Nullable;
 import javax.persistence.*;
+import javax.swing.*;
 
 /**
  * Created by Admin on 29.11.2016 г..
@@ -59,6 +60,7 @@ public class Article {
 
     //The "@Column" annotation gives us many useful features.
     //For this case however, we only want to tell Hibernate that this column can't be empty.
+
     @Column(nullable = false)
     public String getTitle() {
         return title;
@@ -67,8 +69,6 @@ public class Article {
     public void setTitle(String title) {
         this.title = title;
     }
-
-
 
     /*
         Here we are again making the field required.
