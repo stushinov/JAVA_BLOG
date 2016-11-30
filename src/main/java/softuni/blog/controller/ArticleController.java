@@ -124,6 +124,8 @@ public class ArticleController {
 
 
     //Article edit-GET method
+    @GetMapping("/article/edit/{id}")
+    @PreAuthorize("isAuthenticated()")
     public String edit(@PathVariable Integer id, Model model){
 
         if(!this.articleRepository.exists(id)){
@@ -138,5 +140,5 @@ public class ArticleController {
         return "base-layout";
     }
 
-    
+
 }
