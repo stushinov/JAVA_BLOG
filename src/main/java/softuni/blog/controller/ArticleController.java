@@ -141,4 +141,29 @@ public class ArticleController {
     }
 
 
+    //Article edit-POST method
+    @PostMapping("/article/edit/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public String editProcess(@PathVariable Integer id, ArticleBindingModel articleBindingModel){
+
+        if(!this.articleRepository.exists(id)){
+            return "redirect:/";
+        }
+
+        //Get the current article
+        Article article = this.articleRepository.findOne(id);
+
+        //Set the current article content to the input form in 'edit'
+        article.setContent(articleBindingModel.getContent());
+
+        //Set the current article title to the input form in 'edit'
+        article.setTitle(articleBindingModel.getTitle());
+
+        //Save the edited article to the database
+        this.articleRepository.saveAndFlush(article);
+
+        //redirects the user to the article details
+        return "redirect:/article/" + article.getId();
+    }
+
 }
