@@ -61,6 +61,7 @@ public class Role {
         this.name = name;
     }
 
+    @Transient
     public String getSimpleName(){
         return StringUtils.capitalize(this.getName().substring(5).toLowerCase());
     }
