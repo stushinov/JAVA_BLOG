@@ -183,4 +183,21 @@ public class ArticleController {
 
         return "base-layout";
     }
+
+
+    //Article delete-POST method
+    @PostMapping("/article/delete/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public String deleteProcess(@PathVariable Integer id){
+
+        if(!this.articleRepository.exists(id)){
+            return "redirect:/";
+        }
+
+        Article article = this.articleRepository.findOne(id);
+
+        this.articleRepository.delete(article);
+
+        return "redirect:/";
+    }
 }
