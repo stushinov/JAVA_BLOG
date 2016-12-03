@@ -3,6 +3,7 @@ package softuni.blog.controller;
 import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -111,6 +112,17 @@ public class ArticleController {
     public String details(Model model, @PathVariable Integer id){
         if(!this.articleRepository.exists(id)){
             return "redirect:/";
+        }
+
+
+        //This will get our authentication token and check if the type of user is anonymous.
+        //If the authentication is anonymous it means that we don't have logged in user.
+        //In the body of our if, we need to get our current use
+        if(!(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)){
+            UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User entityUser = this.userRepository.findByEmail(principal.getUsername());
+
+            model.addAttribute("user", entityUser);
         }
 
         //Get article from database using our repository
