@@ -16,7 +16,7 @@
                         <div class="pull-right">
 
                             <!--Whit the th:block below we made sure that the buttons edit and delete are only seen by logged in users-->
-                            <th:block sec:authorize="isAuthenticated">
+                            <th:block sec:authorize="isAuthenticated()">
                             <a class="btn btn-success btn-xs" th:href="@{/article/edit/{id}(id = ${article.id})}">Edit</a>
                             <a class="btn btn-danger btn-xs" th:href="@{/article/delete/{id}(id = ${article.id})}">Delete</a>
                             </th:block>
