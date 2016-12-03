@@ -134,6 +134,10 @@ public class ArticleController {
 
         Article article = this.articleRepository.findOne(id);
 
+        if(!isUserAuthorOrAdmin(article)){
+            return "redirect:/article/" + id;
+        }
+
         model.addAttribute("view", "article/edit");
         model.addAttribute("article", article);
 
@@ -153,6 +157,9 @@ public class ArticleController {
         //Get the current article
         Article article = this.articleRepository.findOne(id);
 
+        if(!isUserAuthorOrAdmin(article)){
+            return "redirect:/article/" + id;
+        }
         //Set the current article content to the input form in 'edit'
         article.setContent(articleBindingModel.getContent());
 
@@ -178,6 +185,10 @@ public class ArticleController {
 
         Article article = this.articleRepository.findOne(id);
 
+        if(!isUserAuthorOrAdmin(article)){
+            return "redirect:/article/" + id;
+        }
+
         model.addAttribute("article", article);
         model.addAttribute("view", "article/delete");
 
@@ -196,8 +207,21 @@ public class ArticleController {
 
         Article article = this.articleRepository.findOne(id);
 
+        if(!isUserAuthorOrAdmin(article)){
+            return "redirect:/article/" + id;
+        }
+
         this.articleRepository.delete(article);
 
         return "redirect:/";
+    }
+
+    //This method verifies if for the current article the user viewing is its user or admin
+    private boolean isUserAuthorOrAdmin(Article article){
+
+        UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User userEntity = this.userRepository.findByEmail(user.getUsername());
+
+        return userEntity.isAdmin() || userEntity.isAuthor(article);
     }
 }
