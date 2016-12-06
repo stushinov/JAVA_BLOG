@@ -9,7 +9,7 @@ import java.util.Set;
  */
 
 @Entity
-@Table(name = "category")
+@Table(name = "categories")
 public class Category {
 
     private Integer id;
