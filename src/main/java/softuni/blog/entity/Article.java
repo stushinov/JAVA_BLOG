@@ -42,8 +42,19 @@ public class Article {
 
     private User author;
 
+    private Category category;
 
 
+
+    @ManyToOne()
+    @JoinColumn(nullable = false, name = "categoryId")
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 
     //The id column will be the primary key in our database and as such we need to use the "@Id" annotation.
     //The "@GeneratedValue" annotation tells Hibernate that the database should generate the values automatically.
