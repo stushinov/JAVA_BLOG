@@ -2,6 +2,7 @@ package softuni.blog.entity;
 // import com.sun.istack.internal.Nullable;
 import javax.persistence.*;
 import javax.swing.*;
+import java.util.Set;
 
 /**
  * Created by Admin on 29.11.2016 г..
@@ -44,6 +45,19 @@ public class Article {
     private User author;
 
     private Category category;
+
+    private Set<Tag> tags;
+
+
+    @ManyToMany()
+    @JoinColumn(table = "articles_tags")
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
+    }
 
 
 
