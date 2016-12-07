@@ -24,6 +24,7 @@ import softuni.blog.repository.UserRepository;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 /**
  * Created by Admin on 29.11.2016 г..
@@ -198,9 +199,12 @@ public class ArticleController {
 
         List<Category> categories = this.categoryRepository.findAll();
 
+        String tagString = article.getTags().stream().map(Tag::getName).collect(Collectors.joining(", "));
+
         model.addAttribute("view", "article/edit");
         model.addAttribute("article", article);
         model.addAttribute("categories", categories);
+        model.addAttribute("tags", tagString);
 
         return "base-layout";
     }
@@ -224,6 +228,8 @@ public class ArticleController {
 
         Category category = this.categoryRepository.findOne(articleBindingModel.getCategoryId());
 
+        HashSet<Tag> tags = this.findTagsFromString(articleBindingModel.getTagString());
+
         article.setCategory(category);
 
         //Set the current article content to the input form in 'edit'
@@ -232,6 +238,9 @@ public class ArticleController {
         //Set the current article title to the input form in 'edit'
         article.setTitle(articleBindingModel.getTitle());
 
+        article.setTags(tags);
+
+        
         //Save the edited article to the database
         this.articleRepository.saveAndFlush(article);
 
