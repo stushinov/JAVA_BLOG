@@ -3,8 +3,11 @@ package softuni.blog.controller.admin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import softuni.blog.bindingModel.CategoryBindingModel;
 import softuni.blog.entity.Category;
 import softuni.blog.repository.ArticleRepository;
 import softuni.blog.repository.CategoryRepository;
@@ -41,5 +44,31 @@ public class CategoryController {
         model.addAttribute("categories", categories);
         model.addAttribute("view", "admin/category/list");
         return "base-layout";
+    }
+
+
+    //Just a get method for the create category
+    //This method will only return our creation form.
+    @GetMapping("/create")
+    public String create(Model model){
+        model.addAttribute("view", "admin/category/create");
+        return "base-layout";
+    }
+
+
+    //The method that actually creates categories using our CategoryBindingModel
+    @PostMapping("/create")
+    public String createProcess(CategoryBindingModel categoryBindingModel){
+
+        //First, we need to check if the field is empty and if it is, we should redirect the user
+        if(StringUtils.isEmpty(categoryBindingModel.getName())){
+            return "redirect:/admin/categories/create";
+        }
+
+        Category category = new Category(categoryBindingModel.getName());
+
+        this.categoryRepository.saveAndFlush(category);
+
+        return "redirect:/admin/categories/";
     }
 }
