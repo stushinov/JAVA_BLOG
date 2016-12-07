@@ -64,7 +64,6 @@ public class ArticleController {
         //Gets categories so we can use it in the dropdown in the creation of an article
         List<Category> categories = this.categoryRepository.findAll();
 
-
         model.addAttribute("categories", categories);
         model.addAttribute("view", "article/create");
         return "base-layout";
@@ -108,6 +107,7 @@ public class ArticleController {
         );
 
         this.articleRepository.saveAndFlush(articleEntity);
+
         return "redirect:/";
 
         /*
