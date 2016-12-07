@@ -13,9 +13,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import softuni.blog.bindingModel.ArticleBindingModel;
 import softuni.blog.entity.Article;
+import softuni.blog.entity.Category;
 import softuni.blog.entity.User;
 import softuni.blog.repository.ArticleRepository;
+import softuni.blog.repository.CategoryRepository;
 import softuni.blog.repository.UserRepository;
+
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Admin on 29.11.2016 г..
@@ -31,8 +36,12 @@ public class ArticleController {
     */
     @Autowired
     private ArticleRepository articleRepository;
+
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
 
 
@@ -51,6 +60,12 @@ public class ArticleController {
         //This code will add to our model a key-value pair.
         //The key will be the view we want to render and the value is the path to our view.
         // We want to load the "create" file from the "article" folder. Then we simply tell Spring to use our base layout.
+
+        //Gets categories so we can use it in the dropdown in the creation of an article
+        List<Category> categories = this.categoryRepository.findAll();
+
+
+        model.addAttribute("categories", categories);
         model.addAttribute("view", "article/create");
         return "base-layout";
     }
@@ -82,12 +97,14 @@ public class ArticleController {
                                                               .getPrincipal();
         //We are using the user repository to find a user by his email. Spring Security saves username, but in our case this is our email.
         User userEntity = this.userRepository.findByEmail(user.getUsername());
+        Category category = this.categoryRepository.findOne(articleBindingModel.getCategoryId());
 
         //We upload it to our database, using our article repository
         Article articleEntity = new Article(
                 articleBindingModel.getTitle(),
                 articleBindingModel.getContent(),
-                userEntity
+                userEntity,
+                category
         );
 
         this.articleRepository.saveAndFlush(articleEntity);

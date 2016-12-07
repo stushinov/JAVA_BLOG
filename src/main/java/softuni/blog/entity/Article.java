@@ -17,10 +17,11 @@ public class Article {
         We will use this constructor to create articles easily.
         However, we need to create another empty constructor for Hibernate
         */
-    public Article(String title, String content, User author){
+    public Article(String title, String content, User author, Category category){
         this.content = content;
         this.title = title;
         this.author = author;
+        this.category = category;
     }
 
     public Article() {}
