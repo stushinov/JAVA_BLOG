@@ -167,8 +167,11 @@ public class ArticleController {
             return "redirect:/article/" + id;
         }
 
+        List<Category> categories = this.categoryRepository.findAll();
+
         model.addAttribute("view", "article/edit");
         model.addAttribute("article", article);
+        model.addAttribute("categories", categories);
 
         return "base-layout";
     }
@@ -189,6 +192,11 @@ public class ArticleController {
         if(!isUserAuthorOrAdmin(article)){
             return "redirect:/article/" + id;
         }
+
+        Category category = this.categoryRepository.findOne(articleBindingModel.getCategoryId());
+
+        article.setCategory(category);
+
         //Set the current article content to the input form in 'edit'
         article.setContent(articleBindingModel.getContent());
 
