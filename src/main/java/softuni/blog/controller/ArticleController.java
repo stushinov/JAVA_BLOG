@@ -240,7 +240,7 @@ public class ArticleController {
 
         article.setTags(tags);
 
-        
+
         //Save the edited article to the database
         this.articleRepository.saveAndFlush(article);
 
