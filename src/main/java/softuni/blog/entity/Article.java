@@ -2,6 +2,7 @@ package softuni.blog.entity;
 // import com.sun.istack.internal.Nullable;
 import javax.persistence.*;
 import javax.swing.*;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -18,11 +19,12 @@ public class Article {
         We will use this constructor to create articles easily.
         However, we need to create another empty constructor for Hibernate
         */
-    public Article(String title, String content, User author, Category category){
+    public Article(String title, String content, User author, Category category, HashSet<Tag> tags){
         this.content = content;
         this.title = title;
         this.author = author;
         this.category = category;
+        this.tags = tags;
     }
 
     public Article() {}

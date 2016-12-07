@@ -14,16 +14,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import softuni.blog.bindingModel.ArticleBindingModel;
 import softuni.blog.entity.Article;
 import softuni.blog.entity.Category;
+import softuni.blog.entity.Tag;
 import softuni.blog.entity.User;
 import softuni.blog.repository.ArticleRepository;
 import softuni.blog.repository.CategoryRepository;
+import softuni.blog.repository.TagRepository;
 import softuni.blog.repository.UserRepository;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
 /**
  * Created by Admin on 29.11.2016 г..
+ *
+ *
  */
 
 @Controller
@@ -43,8 +48,30 @@ public class ArticleController {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private TagRepository tagRepository;
 
 
+    //This will be a helper method that will take a string and extract all tags from it
+    private HashSet<Tag> findTagsFromString(String tagString){
+
+        HashSet<Tag> tags = new HashSet<>();
+
+        String[] tagNames = tagString.split(",\\s*");
+
+        for(String tagName : tagNames){
+            Tag currentTag = this.tagRepository.findByName(tagName);
+
+            if(currentTag == null){
+                currentTag = new Tag(tagName);
+                this.tagRepository.saveAndFlush(currentTag);
+            }
+
+            tags.add(currentTag);
+        }
+
+        return tags;
+    }
 
     /*
         The "@GetMapping" annotation tells Spring that this method cannot be called if the user wants to submit data.
@@ -97,13 +124,15 @@ public class ArticleController {
         //We are using the user repository to find a user by his email. Spring Security saves username, but in our case this is our email.
         User userEntity = this.userRepository.findByEmail(user.getUsername());
         Category category = this.categoryRepository.findOne(articleBindingModel.getCategoryId());
+        HashSet<Tag> tags = this.findTagsFromString(articleBindingModel.getTagString());
 
         //We upload it to our database, using our article repository
         Article articleEntity = new Article(
                 articleBindingModel.getTitle(),
                 articleBindingModel.getContent(),
                 userEntity,
-                category
+                category,
+                tags
         );
 
         this.articleRepository.saveAndFlush(articleEntity);

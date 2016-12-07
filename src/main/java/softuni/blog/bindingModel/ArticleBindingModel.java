@@ -7,6 +7,11 @@ import javax.validation.constraints.NotNull;
  *
  * We still need to validate the user input. This is done by creating binding models.
  * The idea behind them is to fill the user input inside and validate it. If it validates, we can use it in our application
+ *
+ *
+ *  * #NOTE FOR THE TAGS : This is the first entity that won't have controller for create,
+ * edit and delete methods. That is because we will create the tags when we create article.
+ * We won't edit and delete tags, we will just detach them from an article.
  */
 public class ArticleBindingModel {
 
@@ -20,6 +25,19 @@ public class ArticleBindingModel {
     private String content;
 
     private Integer categoryId;
+
+    private String tagString;
+
+
+
+
+    public String getTagString() {
+        return tagString;
+    }
+
+    public void setTagString(String tagString) {
+        this.tagString = tagString;
+    }
 
     public Integer getCategoryId() {
         return categoryId;
